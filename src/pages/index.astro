@@ -1,11 +1,252 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Sidebar from "../components/Sidebar.astro";
+import StatCard from "../components/StatCard.astro";
+import ChartCard from "../components/ChartCard.astro";
+import RecentActivity from "../components/RecentActivity.astro";
+import DataTable from "../components/DataTable.astro";
 ---
 
 <Layout>
-	<Welcome />
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <Sidebar />
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-x-hidden">
+      <Header title="Dashboard Overview" />
+      
+      <main class="p-6">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCard
+            title="Total Revenue"
+            value="$24,580"
+            change="+12.5%"
+            icon="fas fa-dollar-sign"
+            color="bg-gradient-to-br from-green-500 to-emerald-600"
+            trend="up"
+          />
+          <StatCard
+            title="New Users"
+            value="1,248"
+            change="+8.2%"
+            icon="fas fa-users"
+            color="bg-gradient-to-br from-blue-500 to-cyan-600"
+            trend="up"
+          />
+          <StatCard
+            title="Orders"
+            value="342"
+            change="-3.1%"
+            icon="fas fa-shopping-cart"
+            color="bg-gradient-to-br from-purple-500 to-violet-600"
+            trend="down"
+          />
+          <StatCard
+            title="Conversion Rate"
+            value="4.8%"
+            change="+1.7%"
+            icon="fas fa-chart-line"
+            color="bg-gradient-to-br from-orange-500 to-amber-600"
+            trend="up"
+          />
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <ChartCard title="Revenue Overview" />
+          <ChartCard title="User Growth" />
+        </div>
+
+        <!-- Tables & Activity Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2">
+            <DataTable />
+          </div>
+          <div>
+            <RecentActivity />
+            
+            <!-- Quick Stats -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 mt-6 text-white">
+              <h3 class="text-lg font-semibold mb-4">Performance Summary</h3>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span>Server Uptime</span>
+                    <span>99.8%</span>
+                  </div>
+                  <div class="w-full bg-blue-700 rounded-full h-2">
+                    <div class="bg-white h-2 rounded-full" style="width: 99.8%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span>Response Time</span>
+                    <span>142ms</span>
+                  </div>
+                  <div class="w-full bg-blue-700 rounded-full h-2">
+                    <div class="bg-white h-2 rounded-full" style="width: 94%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span>Error Rate</span>
+                    <span>0.12%</span>
+                  </div>
+                  <div class="w-full bg-blue-700 rounded-full h-2">
+                    <div class="bg-white h-2 rounded-full" style="width: 99.8%"></div>
+                  </div>
+                </div>
+              </div>
+              <button class="w-full mt-6 bg-white text-blue-600 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors">
+                View Detailed Report
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Info Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-semibold text-gray-800">Active Users</h4>
+              <i class="fas fa-users text-blue-500"></i>
+            </div>
+            <div class="flex items-end justify-between">
+              <div>
+                <p class="text-3xl font-bold text-gray-800">842</p>
+                <p class="text-sm text-gray-500 mt-1">Currently online</p>
+              </div>
+              <div class="flex -space-x-3">
+                {["bg-blue-400", "bg-purple-400", "bg-green-400", "bg-yellow-400"].map((color, i) => (
+                  <div class={`w-10 h-10 ${color} rounded-full border-2 border-white`}></div>
+                ))}
+                <div class="w-10 h-10 bg-gray-200 rounded-full border-2 border-white flex items-center justify-center text-gray-600 text-sm font-medium">
+                  +38
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-semibold text-gray-800">Top Product</h4>
+              <i class="fas fa-star text-yellow-500"></i>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
+                <i class="fas fa-headphones text-blue-600 text-2xl"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800">Wireless Headphones Pro</p>
+                <p class="text-sm text-gray-500 mt-1">128 sold this month</p>
+                <div class="flex items-center mt-2">
+                  {[...Array(5)].map((_, i) => (
+                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                  ))}
+                  <span class="text-sm text-gray-600 ml-2">4.8 (124 reviews)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-semibold text-gray-800">Next Meeting</h4>
+              <i class="fas fa-calendar text-purple-500"></i>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="text-center">
+                <p class="text-2xl font-bold text-blue-600">15</p>
+                <p class="text-sm text-gray-500">NOV</p>
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-gray-800">Quarterly Review</p>
+                <p class="text-sm text-gray-500 mt-1">2:00 PM - 4:00 PM</p>
+                <div class="flex items-center mt-2">
+                  <div class="flex -space-x-2">
+                    {["bg-blue-400", "bg-green-400", "bg-purple-400"].map((color, i) => (
+                      <div class={`w-6 h-6 ${color} rounded-full border-2 border-white`}></div>
+                    ))}
+                  </div>
+                  <span class="text-sm text-gray-600 ml-2">+5 others</span>
+                </div>
+              </div>
+            </div>
+            <button class="w-full mt-4 bg-blue-50 text-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors">
+              <i class="fas fa-video mr-2"></i> Join Meeting
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-gray-200 bg-white px-6 py-4">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+          <p class="text-sm text-gray-500">© 2023 AnalyticsPro. All rights reserved.</p>
+          <div class="flex items-center space-x-6 mt-2 md:mt-0">
+            <a href="#" class="text-sm text-gray-500 hover:text-gray-700">Privacy Policy</a>
+            <a href="#" class="text-sm text-gray-500 hover:text-gray-700">Terms of Service</a>
+            <a href="#" class="text-sm text-gray-500 hover:text-gray-700">Contact</a>
+            <div class="flex items-center space-x-4">
+              <a href="#" class="text-gray-400 hover:text-gray-600">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-gray-600">
+                <i class="fab fa-facebook"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-gray-600">
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-gray-600">
+                <i class="fab fa-github"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
 </Layout>
+
+<style>
+  /* Responsive sidebar toggle for mobile */
+  @media (max-width: 1024px) {
+    aside {
+      position: fixed;
+      left: -100%;
+      transition: left 0.3s ease;
+      z-index: 50;
+    }
+    aside.active {
+      left: 0;
+    }
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+</style>
