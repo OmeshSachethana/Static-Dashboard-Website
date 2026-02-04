@@ -1,0 +1,294 @@
+---
+const stats = [
+  { label: 'Active Sessions', value: '142', change: '+12', icon: 'fa-user-clock', color: 'text-blue-500', bgColor: 'bg-blue-500' },
+  { label: 'Page Views', value: '2.4K', change: '+8%', icon: 'fa-eye', color: 'text-green-500', bgColor: 'bg-green-500' },
+  { label: 'API Calls', value: '856', change: '-3%', icon: 'fa-code', color: 'text-purple-500', bgColor: 'bg-purple-500' },
+  { label: 'Response Time', value: '142ms', change: '-12ms', icon: 'fa-bolt', color: 'text-yellow-500', bgColor: 'bg-yellow-500' }
+];
+
+const activities = [
+  { user: 'User_4291', action: 'Viewed dashboard', time: 'Just now' },
+  { user: 'User_5823', action: 'Made purchase', amount: '$49.99', time: '30s ago' },
+  { user: 'User_7194', action: 'Signed up', time: '1m ago' },
+  { user: 'User_3265', action: 'Downloaded report', time: '2m ago' },
+  { user: 'User_8942', action: 'Updated profile', time: '3m ago' }
+];
+---
+
+<div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 p-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-xl font-bold text-gray-800 dark:text-white">Real-time Stats</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Live data updates every 3 seconds</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+        <span class="text-sm font-medium text-green-500">Live</span>
+      </div>
+      <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" title="Refresh">
+        <i class="fas fa-sync-alt text-gray-600 dark:text-gray-400"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-2 gap-4 mb-8">
+    {stats.map((stat) => (
+      <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+        <div class="flex items-center justify-between mb-3">
+          <div class={`${stat.bgColor} bg-opacity-10 w-12 h-12 rounded-lg flex items-center justify-center`}>
+            <i class={`fas ${stat.icon} ${stat.color} text-lg`}></i>
+          </div>
+          <span class={`text-sm font-medium px-2 py-1 rounded-full ${
+            stat.change.startsWith('+') ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 
+            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+          }`}>
+            {stat.change.startsWith('+') ? '↗ ' : '↘ '}{stat.change}
+          </span>
+        </div>
+        <div class="flex items-baseline space-x-2">
+          <div class="text-2xl font-bold text-gray-800 dark:text-white stat-value" data-value="{stat.value}">{stat.value}</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">/min</div>
+        </div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">{stat.label}</div>
+        
+        <!-- Mini progress bar -->
+        <div class="mt-3">
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+            <div 
+              class={`h-1.5 rounded-full ${stat.bgColor}`}
+              style={`width: ${Math.floor(Math.random() * 60 + 40)}%`}
+            ></div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+  
+  <!-- Live Activity Feed -->
+  <div>
+    <div class="flex items-center justify-between mb-4">
+      <h4 class="font-semibold text-gray-800 dark:text-white">Live Activity Feed</h4>
+      <button class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">
+        View All <i class="fas fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+    
+    <div class="space-y-3 activity-feed" style="max-height: 280px; overflow-y: auto;">
+      {activities.map((activity, index) => (
+        <div class={`flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg animate-slide-up`} style={`animation-delay: ${index * 0.1}s`}>
+          <div class="flex items-center space-x-3">
+            <div class="relative">
+              <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-white text-sm"></i>
+              </div>
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800 dark:text-white">{activity.user}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">{activity.action}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            {activity.amount && (
+              <div class="text-sm font-semibold text-gray-800 dark:text-white">{activity.amount}</div>
+            )}
+            <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+              <i class="fas fa-clock mr-1 text-xs"></i>
+              {activity.time}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  <!-- Data Source Status -->
+  <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        <span class="text-sm text-gray-600 dark:text-gray-400">Data sources connected</span>
+      </div>
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        Last update: <span class="font-medium" id="last-update">Just now</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Real-time updates simulation
+  let updateInterval;
+  let updateCount = 0;
+  
+  function updateStats() {
+    updateCount++;
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('last-update').textContent = timeString;
+    
+    // Update stat values with random fluctuations
+    const statValues = document.querySelectorAll('.stat-value');
+    statValues.forEach(stat => {
+      const original = stat.getAttribute('data-value');
+      let value = original;
+      
+      if (original.includes('K')) {
+        const num = parseFloat(original) * 1000;
+        const change = Math.floor(Math.random() * 200) - 100;
+        const newValue = Math.max(0, num + change);
+        value = (newValue / 1000).toFixed(1) + 'K';
+      } else if (original.includes('ms')) {
+        const num = parseInt(original);
+        const change = Math.floor(Math.random() * 40) - 20;
+        const newValue = Math.max(50, num + change);
+        value = newValue + 'ms';
+      } else {
+        const num = parseInt(original);
+        const change = Math.floor(Math.random() * 30) - 15;
+        const newValue = Math.max(0, num + change);
+        value = newValue.toString();
+      }
+      
+      // Animate the change
+      stat.style.transform = 'scale(1.1)';
+      stat.style.color = '#10b981';
+      
+      setTimeout(() => {
+        stat.textContent = value;
+        stat.style.transform = 'scale(1)';
+        setTimeout(() => {
+          stat.style.color = '';
+        }, 500);
+      }, 200);
+    });
+    
+    // Add new activity
+    const users = ['Alex_J', 'Sarah_M', 'Mike_W', 'Emma_D', 'David_L', 'Lisa_B', 'Robert_K', 'Anna_T'];
+    const actions = [
+      { text: 'Viewed dashboard', amount: null },
+      { text: 'Made purchase', amount: `$${(Math.random() * 100 + 10).toFixed(2)}` },
+      { text: 'Signed up', amount: null },
+      { text: 'Downloaded report', amount: null },
+      { text: 'Updated profile', amount: null },
+      { text: 'Added to cart', amount: `$${(Math.random() * 50 + 5).toFixed(2)}` },
+      { text: 'Submitted form', amount: null },
+      { text: 'Started trial', amount: null }
+    ];
+    
+    const randomUser = users[Math.floor(Math.random() * users.length)];
+    const randomAction = actions[Math.floor(Math.random() * actions.length)];
+    
+    const activityDiv = document.createElement('div');
+    activityDiv.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg animate-slide-up';
+    activityDiv.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <div class="relative">
+          <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-white text-sm"></i>
+          </div>
+          <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-800 dark:text-white">${randomUser}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">${randomAction.text}</p>
+        </div>
+      </div>
+      <div class="text-right">
+        ${randomAction.amount ? `<div class="text-sm font-semibold text-gray-800 dark:text-white">${randomAction.amount}</div>` : ''}
+        <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+          <i class="fas fa-clock mr-1 text-xs"></i>
+          Just now
+        </div>
+      </div>
+    `;
+    
+    const feed = document.querySelector('.activity-feed');
+    if (feed) {
+      feed.insertBefore(activityDiv, feed.firstChild);
+      
+      // Remove old activities if too many
+      if (feed.children.length > 8) {
+        feed.removeChild(feed.lastChild);
+      }
+    }
+    
+    // Update connection status randomly
+    if (updateCount % 10 === 0) {
+      const statusDot = document.querySelector('.w-2.h-2.bg-green-500');
+      if (statusDot && Math.random() > 0.8) {
+        statusDot.classList.remove('bg-green-500');
+        statusDot.classList.add('bg-yellow-500');
+        
+        setTimeout(() => {
+          statusDot.classList.remove('bg-yellow-500');
+          statusDot.classList.add('bg-green-500');
+        }, 2000);
+      }
+    }
+  }
+  
+  // Start updates when component is visible
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!updateInterval) {
+          updateInterval = setInterval(updateStats, 3000);
+          updateStats(); // Initial update
+        }
+      } else {
+        clearInterval(updateInterval);
+        updateInterval = null;
+      }
+    });
+  });
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const component = document.currentScript.closest('.bg-white, .dark\\:bg-gray-900');
+    if (component) {
+      observer.observe(component);
+    }
+  });
+  
+  // Clean up on unmount
+  document.currentScript.addEventListener('astro:unmount', () => {
+    clearInterval(updateInterval);
+    observer.disconnect();
+  });
+</script>
+
+<style>
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .activity-feed::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .activity-feed::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .activity-feed::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 2px;
+  }
+  
+  .dark .activity-feed::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+  }
+</style>

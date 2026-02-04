@@ -1,0 +1,299 @@
+---
+const predictions = [
+  { metric: 'Revenue Next Month', value: '$98,500', confidence: 85, trend: 'up', icon: 'fa-dollar-sign' },
+  { metric: 'User Growth', value: '+1,240', confidence: 78, trend: 'up', icon: 'fa-users' },
+  { metric: 'Churn Rate', value: '2.4%', confidence: 65, trend: 'down', icon: 'fa-user-minus' },
+  { metric: 'Customer Satisfaction', value: '4.8/5', confidence: 92, trend: 'up', icon: 'fa-star' }
+];
+
+const factors = [
+  { name: 'Seasonal Trends', impact: 'positive', strength: 8, description: 'Holiday season approaching' },
+  { name: 'Market Conditions', impact: 'neutral', strength: 5, description: 'Stable market conditions' },
+  { name: 'Competitor Actions', impact: 'negative', strength: 6, description: 'New competitor launched' },
+  { name: 'Product Updates', impact: 'positive', strength: 9, description: 'Recent feature release' },
+  { name: 'Economic Factors', impact: 'neutral', strength: 4, description: 'Inflation rates stable' },
+  { name: 'Marketing Campaign', impact: 'positive', strength: 7, description: 'Q4 campaign started' }
+];
+
+const recommendations = [
+  'Increase marketing budget by 15% for Q4',
+  'Launch referral program to boost user growth',
+  'Optimize checkout flow to reduce cart abandonment',
+  'Add customer support during peak hours'
+];
+---
+
+<div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 p-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-xl font-bold text-gray-800 dark:text-white">Predictive Analytics</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">AI-powered forecasts & insights</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <div class="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-medium">
+        <i class="fas fa-brain mr-1"></i>
+        AI v2.1
+      </div>
+      <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" title="Retrain model">
+        <i class="fas fa-redo text-gray-600 dark:text-gray-400"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Predictions Grid -->
+  <div class="grid grid-cols-2 gap-4 mb-8">
+    {predictions.map((pred) => (
+      <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between mb-3">
+          <div class="flex items-center space-x-3">
+            <div class={`w-10 h-10 rounded-lg flex items-center justify-center ${
+              pred.trend === 'up' ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400' :
+              'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400'
+            }`}>
+              <i class={`fas ${pred.icon}`}></i>
+            </div>
+            <div>
+              <div class="text-sm font-medium text-gray-600 dark:text-gray-400">{pred.metric}</div>
+              <div class="text-xl font-bold text-gray-800 dark:text-white mt-1">{pred.value}</div>
+            </div>
+          </div>
+          <div class={`px-2 py-1 text-xs font-medium rounded-full ${
+            pred.trend === 'up' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+          }`}>
+            <i class={`fas fa-arrow-${pred.trend === 'up' ? 'up' : 'down'} mr-1`}></i>
+            {pred.confidence}% conf.
+          </div>
+        </div>
+        
+        <!-- Confidence meter -->
+        <div class="mt-4">
+          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+            <span>Low</span>
+            <span>Confidence</span>
+            <span>High</span>
+          </div>
+          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div 
+              class={`h-2 rounded-full ${
+                pred.confidence > 80 ? 'bg-gradient-to-r from-green-400 to-green-500' :
+                pred.confidence > 60 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' :
+                'bg-gradient-to-r from-red-400 to-red-500'
+              }`}
+              style={`width: ${pred.confidence}%`}
+            ></div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <span>0%</span>
+            <span class="font-medium">{pred.confidence}%</span>
+            <span>100%</span>
+          </div>
+        </div>
+        
+        <!-- Prediction range -->
+        <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <div class="text-xs text-gray-500 dark:text-gray-400">Expected range:</div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">
+              {pred.metric.includes('$') ? '$' + (parseInt(pred.value.replace(/[^0-9]/g, '')) * 0.85).toLocaleString() :
+               pred.metric.includes('%') ? (parseFloat(pred.value) * 0.9).toFixed(1) + '%' :
+               pred.metric.includes('/') ? '4.2/5' :
+               '+' + Math.floor(parseInt(pred.value.replace(/[^0-9]/g, '')) * 0.8)}
+            </span>
+            <span class="text-gray-400">→</span>
+            <span class="text-gray-600 dark:text-gray-400">
+              {pred.metric.includes('$') ? '$' + (parseInt(pred.value.replace(/[^0-9]/g, '')) * 1.15).toLocaleString() :
+               pred.metric.includes('%') ? (parseFloat(pred.value) * 1.1).toFixed(1) + '%' :
+               pred.metric.includes('/') ? '5.0/5' :
+               '+' + Math.floor(parseInt(pred.value.replace(/[^0-9]/g, '')) * 1.2)}
+            </span>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+  
+  <!-- Impact Factors -->
+  <div class="mb-8">
+    <h4 class="font-semibold text-gray-800 dark:text-white mb-4">Impact Factors Analysis</h4>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      {factors.map((factor) => (
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{factor.name}</span>
+            <div class={`w-6 h-6 rounded-full flex items-center justify-center ${
+              factor.impact === 'positive' ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400' :
+              factor.impact === 'negative' ? 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400' :
+              'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+            }`}>
+              <i class={`fas fa-${
+                factor.impact === 'positive' ? 'arrow-up' :
+                factor.impact === 'negative' ? 'arrow-down' : 'minus'
+              } text-xs`}></i>
+            </div>
+          </div>
+          <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">{factor.description}</div>
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-gray-500 dark:text-gray-400">Impact:</div>
+            <div class="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <div class={`w-2 h-2 mx-0.5 rounded-full ${
+                  i < Math.floor(factor.strength / 2) ? 
+                  (factor.impact === 'positive' ? 'bg-green-500' : 
+                   factor.impact === 'negative' ? 'bg-red-500' : 'bg-gray-500') : 
+                  'bg-gray-300 dark:bg-gray-700'
+                }`}></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  <!-- AI Recommendations -->
+  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 rounded-xl p-5">
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <h4 class="font-semibold text-gray-800 dark:text-white flex items-center">
+          <i class="fas fa-robot text-primary-500 mr-2"></i>
+          AI Recommendations
+        </h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Based on predictive analysis</p>
+      </div>
+      <div class="px-3 py-1 bg-primary-500 text-white rounded-full text-sm font-medium">
+        94% match
+      </div>
+    </div>
+    
+    <div class="space-y-3">
+      {recommendations.map((rec, index) => (
+        <div class="flex items-start space-x-3 p-3 bg-white dark:bg-gray-900 rounded-lg">
+          <div class="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+            {index + 1}
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-800 dark:text-white">{rec}</p>
+            <div class="flex items-center justify-between mt-2">
+              <div class="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+                <span class="flex items-center">
+                  <i class="fas fa-chart-line mr-1"></i>
+                  {Math.floor(Math.random() * 30 + 70)}% effective
+                </span>
+                <span class="flex items-center">
+                  <i class="fas fa-clock mr-1"></i>
+                  {Math.floor(Math.random() * 3 + 1)} weeks
+                </span>
+              </div>
+              <button class="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+                Implement →
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+          Expected impact if implemented:
+        </div>
+        <div class="text-lg font-bold text-green-500">+18.5% revenue</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // AI model simulation
+  function simulatePredictionUpdates() {
+    const predictions = document.querySelectorAll('.text-xl.font-bold');
+    
+    predictions.forEach((pred) => {
+      const current = pred.textContent;
+      const isCurrency = current.includes('$');
+      const isPercentage = current.includes('%');
+      const isRating = current.includes('/');
+      
+      // Small random fluctuation to simulate model confidence
+      setTimeout(() => {
+        let newValue;
+        
+        if (isCurrency) {
+          const amount = parseFloat(current.replace(/[^0-9.]/g, ''));
+          const change = (Math.random() * 0.02 - 0.01) * amount; // ±1%
+          newValue = `$${(amount + change).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+        } else if (isPercentage) {
+          const percent = parseFloat(current);
+          const change = Math.random() * 0.1 - 0.05; // ±0.05%
+          newValue = `${Math.max(0, Math.min(100, percent + change)).toFixed(1)}%`;
+        } else if (isRating) {
+          const rating = parseFloat(current);
+          const change = Math.random() * 0.1 - 0.05; // ±0.05
+          newValue = `${Math.min(5, Math.max(0, rating + change)).toFixed(1)}/5`;
+        } else {
+          const num = parseInt(current.replace(/[^0-9]/g, ''));
+          const change = Math.floor(Math.random() * 20) - 10;
+          newValue = `+${Math.max(0, num + change).toLocaleString()}`;
+        }
+        
+        // Animate the update
+        pred.style.transform = 'scale(1.05)';
+        pred.style.opacity = '0.7';
+        
+        setTimeout(() => {
+          pred.textContent = newValue;
+          pred.style.transform = 'scale(1)';
+          pred.style.opacity = '1';
+        }, 300);
+      }, Math.random() * 1000);
+    });
+  }
+  
+  // Start periodic updates
+  let predictionInterval;
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!predictionInterval) {
+          predictionInterval = setInterval(simulatePredictionUpdates, 15000);
+          simulatePredictionUpdates(); // Initial update
+        }
+      } else {
+        clearInterval(predictionInterval);
+        predictionInterval = null;
+      }
+    });
+  });
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const component = document.currentScript.closest('.bg-white, .dark\\:bg-gray-900');
+    if (component) {
+      observer.observe(component);
+    }
+  });
+  
+  // Clean up on unmount
+  document.currentScript.addEventListener('astro:unmount', () => {
+    clearInterval(predictionInterval);
+    observer.disconnect();
+  });
+</script>
+
+<style>
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0);
+    }
+  }
+  
+  .ai-glow {
+    animation: pulse-glow 2s infinite;
+  }
+</style>
