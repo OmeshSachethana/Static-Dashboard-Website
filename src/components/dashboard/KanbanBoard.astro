@@ -1,0 +1,295 @@
+---
+const { title = "Project Board" } = Astro.props;
+
+const columns = [
+  {
+    id: 'backlog',
+    title: 'Backlog',
+    color: 'bg-gray-500',
+    items: [
+      { id: 1, title: 'Design System Update', assignee: 'JD', priority: 'medium', tags: ['Design'], progress: 0 },
+      { id: 2, title: 'API Documentation', assignee: 'SM', priority: 'low', tags: ['Documentation'], progress: 0 },
+      { id: 3, title: 'Mobile App Redesign', assignee: 'EW', priority: 'high', tags: ['Design', 'Mobile'], progress: 0 }
+    ]
+  },
+  {
+    id: 'todo',
+    title: 'To Do',
+    color: 'bg-blue-500',
+    items: [
+      { id: 4, title: 'User Dashboard Redesign', assignee: 'JD', priority: 'high', tags: ['Design', 'Frontend'], progress: 0 },
+      { id: 5, title: 'Database Optimization', assignee: 'ML', priority: 'medium', tags: ['Backend'], progress: 0 }
+    ]
+  },
+  {
+    id: 'in-progress',
+    title: 'In Progress',
+    color: 'bg-yellow-500',
+    items: [
+      { id: 6, title: 'Payment System Integration', assignee: 'RD', priority: 'high', tags: ['Backend', 'Payment'], progress: 65 },
+      { id: 7, title: 'Analytics Dashboard', assignee: 'JD', priority: 'medium', tags: ['Analytics', 'Frontend'], progress: 45 }
+    ]
+  },
+  {
+    id: 'review',
+    title: 'Review',
+    color: 'bg-purple-500',
+    items: [
+      { id: 8, title: 'Security Audit', assignee: 'TS', priority: 'high', tags: ['Security'], progress: 90 },
+      { id: 9, title: 'Performance Testing', assignee: 'AK', priority: 'medium', tags: ['Testing'], progress: 80 }
+    ]
+  },
+  {
+    id: 'done',
+    title: 'Done',
+    color: 'bg-green-500',
+    items: [
+      { id: 10, title: 'User Authentication', assignee: 'RD', priority: 'high', tags: ['Auth'], progress: 100 },
+      { id: 11, title: 'Landing Page Redesign', assignee: 'EW', priority: 'medium', tags: ['Design'], progress: 100 }
+    ]
+  }
+];
+
+const priorityColors = {
+  high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+};
+---
+
+<div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 p-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-xl font-bold text-gray-800 dark:text-white">{title}</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Drag and drop tasks between columns</p>
+    </div>
+    
+    <div class="flex items-center space-x-3">
+      <button class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium">
+        <i class="fas fa-plus mr-2"></i> Add Task
+      </button>
+      <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
+      </button>
+      <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fas fa-ellipsis-v text-gray-600 dark:text-gray-400"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Kanban Board -->
+  <div class="overflow-x-auto pb-4">
+    <div class="flex space-x-6 min-w-max">
+      {columns.map((column) => (
+        <div 
+          class="w-80 flex-shrink-0"
+          data-column-id={column.id}
+          ondrop="drop(event)"
+          ondragover="allowDrop(event)"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-2">
+              <div class={`w-3 h-3 ${column.color} rounded-full`}></div>
+              <h4 class="font-semibold text-gray-800 dark:text-white">{column.title}</h4>
+              <span class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded">
+                {column.items.length}
+              </span>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          
+          <div class="space-y-4">
+            {column.items.map((item) => (
+              <div 
+                class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-move"
+                draggable="true"
+                ondragstart="drag(event)"
+                data-task-id={item.id}
+                data-column-id={column.id}
+              >
+                <div class="flex items-start justify-between mb-3">
+                  <h5 class="font-medium text-gray-800 dark:text-white">{item.title}</h5>
+                  <div class="flex items-center space-x-2">
+                    <span class={`px-2 py-1 text-xs font-medium rounded-full ${priorityColors[item.priority]}`}>
+                      {item.priority}
+                    </span>
+                    <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                      <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {item.tags.map((tag) => (
+                    <span class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white text-xs font-medium">
+                      {item.assignee}
+                    </div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                      {item.id === 10 ? '2d ago' : item.id === 11 ? '1w ago' : 'Today'}
+                    </div>
+                  </div>
+                  
+                  {item.progress > 0 && (
+                    <div class="flex items-center space-x-2">
+                      <div class="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                        <div 
+                          class="bg-green-500 h-2 rounded-full" 
+                          style={`width: ${item.progress}%`}
+                        ></div>
+                      </div>
+                      <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{item.progress}%</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <div class="flex items-center space-x-4">
+                    <span class="flex items-center space-x-1">
+                      <i class="fas fa-comment"></i>
+                      <span>3</span>
+                    </span>
+                    <span class="flex items-center space-x-1">
+                      <i class="fas fa-paperclip"></i>
+                      <span>2</span>
+                    </span>
+                  </div>
+                  <span class="flex items-center space-x-1">
+                    <i class="fas fa-clock"></i>
+                    <span>{item.id === 6 ? '3d' : item.id === 7 ? '5d' : '1d'}</span>
+                  </span>
+                </div>
+              </div>
+            ))}
+            
+            <!-- Add Card Button -->
+            <button class="w-full p-3 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 transition-colors">
+              <i class="fas fa-plus mr-2"></i> Add a card
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Board Statistics -->
+  <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="text-center">
+        <div class="text-2xl font-bold text-gray-800 dark:text-white">11</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">Total Tasks</div>
+      </div>
+      
+      <div class="text-center">
+        <div class="text-2xl font-bold text-gray-800 dark:text-white">2</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">Overdue</div>
+      </div>
+      
+      <div class="text-center">
+        <div class="text-2xl font-bold text-gray-800 dark:text-white">68%</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">Completion Rate</div>
+      </div>
+      
+      <div class="text-center">
+        <div class="text-2xl font-bold text-gray-800 dark:text-white">5.2</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">Avg. Days</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let draggedTask = null;
+  let draggedColumn = null;
+  
+  function drag(event) {
+    draggedTask = event.target;
+    draggedColumn = event.target.getAttribute('data-column-id');
+    event.dataTransfer.setData('text', event.target.id);
+    event.target.classList.add('opacity-50');
+  }
+  
+  function allowDrop(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add('bg-blue-50', 'dark:bg-gray-800');
+  }
+  
+  function drop(event) {
+    event.preventDefault();
+    const column = event.currentTarget;
+    column.classList.remove('bg-blue-50', 'dark:bg-gray-800');
+    
+    if (draggedTask && draggedColumn !== column.getAttribute('data-column-id')) {
+      // Move task to new column
+      const taskContainer = column.querySelector('.space-y-4');
+      if (taskContainer) {
+        taskContainer.insertBefore(draggedTask, taskContainer.querySelector('button'));
+        
+        // Update task status
+        const taskId = draggedTask.getAttribute('data-task-id');
+        const newColumnId = column.getAttribute('data-column-id');
+        
+        console.log(`Task ${taskId} moved from ${draggedColumn} to ${newColumnId}`);
+        
+        // Show success message
+        showToast(`Task moved to ${column.querySelector('h4').textContent}`, 'success');
+      }
+    }
+    
+    draggedTask.classList.remove('opacity-50');
+    draggedTask = null;
+    draggedColumn = null;
+  }
+  
+  function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg bg-${type === 'success' ? 'green' : 'blue'}-500 text-white font-medium z-50`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+  
+  // Initialize drag and drop
+  document.addEventListener('DOMContentLoaded', function() {
+    const tasks = document.querySelectorAll('[draggable="true"]');
+    const columns = document.querySelectorAll('[data-column-id]');
+    
+    tasks.forEach(task => {
+      task.addEventListener('dragend', function() {
+        this.classList.remove('opacity-50');
+      });
+    });
+    
+    columns.forEach(column => {
+      column.addEventListener('dragleave', function() {
+        this.classList.remove('bg-blue-50', 'dark:bg-gray-800');
+      });
+    });
+  });
+</script>
+
+<style>
+  [draggable="true"] {
+    user-select: none;
+  }
+  
+  .drop-zone {
+    transition: background-color 0.2s;
+  }
+  
+  .drop-zone.drag-over {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+</style>

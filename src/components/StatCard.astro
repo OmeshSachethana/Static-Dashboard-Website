@@ -1,0 +1,26 @@
+---
+const { title, value, change, icon, color, trend = "up" } = Astro.props;
+const trendColors = {
+  up: "text-green-500",
+  down: "text-red-500"
+};
+---
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+  <div class="flex items-start justify-between">
+    <div>
+      <p class="text-sm text-gray-500 mb-2">{title}</p>
+      <h3 class="text-3xl font-bold text-gray-800">{value}</h3>
+      <div class="flex items-center mt-2">
+        <span class={`text-sm font-medium ${trendColors[trend]}`}>
+          <i class={`fas fa-${trend === "up" ? "arrow-up" : "arrow-down"} mr-1`}></i>
+          {change}
+        </span>
+        <span class="text-gray-500 text-sm ml-2">from last month</span>
+      </div>
+    </div>
+    <div class={`${color} w-14 h-14 rounded-xl flex items-center justify-center`}>
+      <i class={`${icon} text-white text-2xl`}></i>
+    </div>
+  </div>
+</div>

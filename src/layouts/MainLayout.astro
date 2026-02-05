@@ -1,0 +1,345 @@
+---
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Advanced Analytics Dashboard with real-time data visualization and insights" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/dashboard.png" />
+    <link rel="icon" href="/dashboard.png" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="ProDash Analytics Dashboard" />
+    <meta property="og:description" content="Advanced analytics and business intelligence dashboard" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="color-scheme" content="dark light" />
+    
+    <meta name="generator" content={Astro.generator} />
+    <title>ProDash Analytics</title>
+</head>
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="fixed inset-0 bg-white dark:bg-gray-950 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-gray-200 dark:border-gray-800 rounded-full"></div>
+            <div class="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full absolute top-0 left-0 animate-spin"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="app">
+        <slot />
+    </div>
+
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <!-- Notifications Container -->
+    <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2 w-96 max-w-full"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden"></div>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg hidden z-50">
+        <i class="fas fa-wifi-slash mr-2"></i>
+        <span>You are offline</span>
+    </div>
+
+    <!-- Keyboard Shortcuts Help -->
+    <div id="keyboard-help" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-2xl w-full mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Keyboard Shortcuts</h2>
+                <button onclick="document.getElementById('keyboard-help').classList.add('hidden')" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <span class="text-gray-700 dark:text-gray-300">Toggle Sidebar</span>
+                    <kbd class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded">⌘ + B</kbd>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <span class="text-gray-700 dark:text-gray-300">Search</span>
+                    <kbd class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded">⌘ + K</kbd>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <span class="text-gray-700 dark:text-gray-300">Toggle Theme</span>
+                    <kbd class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded">⌘ + T</kbd>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <span class="text-gray-700 dark:text-gray-300">Full Screen</span>
+                    <kbd class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded">F11</kbd>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global initialization script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize theme from localStorage
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            
+            // Initialize theme store if exists
+            if (typeof themeStore !== 'undefined') {
+                themeStore.init();
+            }
+            
+            // Hide loading spinner
+            setTimeout(() => {
+                const spinner = document.getElementById('loading-spinner');
+                if (spinner) {
+                    spinner.style.opacity = '0';
+                    setTimeout(() => {
+                        spinner.style.display = 'none';
+                    }, 300);
+                }
+            }, 500);
+            
+            // Online/offline detection
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            
+            function updateOnlineStatus() {
+                const indicator = document.getElementById('offline-indicator');
+                if (!navigator.onLine) {
+                    indicator.classList.remove('hidden');
+                } else {
+                    indicator.classList.add('hidden');
+                }
+            }
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Cmd/Ctrl + K for search
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    const searchInput = document.querySelector('input[type="text"][placeholder*="Search"]');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                }
+                
+                // Cmd/Ctrl + T for theme toggle
+                if ((e.metaKey || e.ctrlKey) && e.key === 't') {
+                    e.preventDefault();
+                    if (typeof themeStore !== 'undefined') {
+                        themeStore.toggleTheme();
+                    }
+                }
+                
+                // Cmd/Ctrl + B for sidebar toggle
+                if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+                    e.preventDefault();
+                    // Toggle mobile sidebar
+                    if (window.innerWidth < 1024) {
+                        toggleMobileSidebar();
+                    } else if (typeof themeStore !== 'undefined') {
+                        themeStore.toggleSidebar();
+                    }
+                }
+                
+                // ? for keyboard help
+                if (e.key === '?') {
+                    e.preventDefault();
+                    document.getElementById('keyboard-help').classList.remove('hidden');
+                }
+                
+                // Escape to close modals/help/sidebar
+                if (e.key === 'Escape') {
+                    document.getElementById('keyboard-help').classList.add('hidden');
+                    const modal = document.getElementById('modal-container');
+                    if (modal && !modal.classList.contains('hidden')) {
+                        modal.classList.add('hidden');
+                    }
+                    
+                    // Close mobile sidebar
+                    if (window.innerWidth < 1024) {
+                        const sidebar = document.getElementById('sidebar');
+                        if (sidebar && sidebar.__x && sidebar.__x.$data.isOpen) {
+                            sidebar.__x.$data.isOpen = false;
+                            document.body.style.overflow = '';
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Notification system
+        function showNotification(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('notifications');
+            if (!container) return;
+            
+            const id = 'notification-' + Date.now();
+            const notification = document.createElement('div');
+            
+            const colors = {
+                info: 'bg-blue-500',
+                success: 'bg-green-500',
+                warning: 'bg-yellow-500',
+                error: 'bg-red-500'
+            };
+            
+            notification.className = `${colors[type]} text-white p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full opacity-0`;
+            notification.id = id;
+            notification.innerHTML = `
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-3">
+                        <i class="fas fa-${type === 'info' ? 'info-circle' : type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'} mt-0.5"></i>
+                        <div>
+                            <p class="font-medium">${message}</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('${id}').remove()" class="text-white hover:text-gray-200 ml-4">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full', 'opacity-0');
+                notification.classList.add('translate-x-0', 'opacity-100');
+            }, 10);
+            
+            // Auto-remove
+            if (duration > 0) {
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.classList.add('translate-x-full', 'opacity-0');
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.remove();
+                            }
+                        }, 300);
+                    }
+                }, duration);
+            }
+        }
+        
+        // Expose to global scope
+        window.showNotification = showNotification;
+        window.toggleMobileSidebar = window.toggleMobileSidebar || function() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && sidebar.__x) {
+                sidebar.__x.$data.isOpen = !sidebar.__x.$data.isOpen;
+                
+                // Toggle body overflow
+                if (sidebar.__x.$data.isOpen) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }
+        };
+    </script>
+</body>
+</html>
+
+<style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: rgba(156, 163, 175, 0.5);
+        border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(156, 163, 175, 0.8);
+    }
+    
+    .dark ::-webkit-scrollbar-thumb {
+        background: rgba(75, 85, 99, 0.5);
+    }
+    
+    .dark ::-webkit-scrollbar-thumb:hover {
+        background: rgba(75, 85, 99, 0.8);
+    }
+    
+    /* Selection color */
+    ::selection {
+        background-color: rgba(59, 130, 246, 0.3);
+    }
+    
+    .dark ::selection {
+        background-color: rgba(59, 130, 246, 0.5);
+    }
+    
+    /* Smooth transitions */
+    * {
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    
+    /* Focus styles */
+    :focus-visible {
+        outline: 2px solid rgba(59, 130, 246, 0.5);
+        outline-offset: 2px;
+    }
+    
+    /* Mobile sidebar overlay */
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 30;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* Print styles */
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        
+        body {
+            background: white !important;
+            color: black !important;
+        }
+        
+        a {
+            color: black !important;
+            text-decoration: underline !important;
+        }
+    }
+</style>

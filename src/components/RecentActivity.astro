@@ -1,0 +1,39 @@
+---
+const activities = [
+  { user: "Alex Johnson", action: "placed new order", item: "#ORD-7841", time: "2 min ago", color: "bg-blue-100 text-blue-600" },
+  { user: "Sarah Miller", action: "updated profile", item: "", time: "15 min ago", color: "bg-green-100 text-green-600" },
+  { user: "Mike Wilson", action: "completed payment", item: "$249.99", time: "1 hour ago", color: "bg-purple-100 text-purple-600" },
+  { user: "Emma Davis", action: "added new product", item: "Wireless Headphones", time: "3 hours ago", color: "bg-yellow-100 text-yellow-600" },
+  { user: "David Lee", action: "requested refund", item: "#REF-4123", time: "5 hours ago", color: "bg-red-100 text-red-600" },
+  { user: "Lisa Brown", action: "wrote review", item: "⭐️⭐️⭐️⭐️⭐️", time: "1 day ago", color: "bg-indigo-100 text-indigo-600" },
+];
+---
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+  <div class="flex items-center justify-between mb-6">
+    <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+    <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+      View All <i class="fas fa-arrow-right ml-1"></i>
+    </button>
+  </div>
+
+  <div class="space-y-4">
+    {activities.map((activity) => (
+      <div class="flex items-start space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+        <div class={`${activity.color} w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0`}>
+          <i class="fas fa-user text-sm"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm text-gray-800">
+            <span class="font-medium">{activity.user}</span> {activity.action}
+            {activity.item && <span class="font-medium"> {activity.item}</span>}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">{activity.time}</p>
+        </div>
+        <button class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+      </div>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,239 @@
+---
+const { title = "Dashboard", showSearch = true } = Astro.props;
+---
+
+<header class="sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 shadow-sm">
+  <div class="flex items-center justify-between">
+    <!-- Left side: Mobile menu button and Breadcrumb -->
+    <div class="flex items-center space-x-4">
+      <!-- Mobile Menu Button -->
+      <button 
+        id="mobile-menu-button" 
+        class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+        onclick="toggleSidebar()"
+      >
+        <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
+      </button>
+      
+      <div class="flex items-center space-x-3">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{title}</h1>
+        <div class="relative group hidden md:block">
+          <button class="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+            <span>Overview</span>
+            <i class="fas fa-chevron-down text-xs"></i>
+          </button>
+          <div class="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <a href="/" class="block px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">Main Dashboard</a>
+            <a href="/analytics" class="block px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">Analytics</a>
+            <a href="/finance" class="block px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700">Finance</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side: Search, Actions, and Profile -->
+    <div class="flex items-center space-x-4">
+      <!-- Quick Actions -->
+      <div class="hidden md:flex items-center space-x-2">
+        <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 relative group" title="Create New">
+          <i class="fas fa-plus text-gray-600 dark:text-gray-300"></i>
+          <div class="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <a href="#" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+              <i class="fas fa-user-plus text-blue-500"></i>
+              <span>New User</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+              <i class="fas fa-file-invoice-dollar text-green-500"></i>
+              <span>New Invoice</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+              <i class="fas fa-project-diagram text-purple-500"></i>
+              <span>New Project</span>
+            </a>
+          </div>
+        </button>
+        
+        <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" title="Calendar">
+          <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-300"></i>
+        </button>
+        
+        <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" title="Messages">
+          <i class="fas fa-envelope text-gray-600 dark:text-gray-300"></i>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+      </div>
+
+      {showSearch && (
+        <div class="relative hidden md:block">
+          <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+          <input
+            type="text"
+            placeholder="Search anything..."
+            class="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64 lg:w-80 text-gray-900 dark:text-white"
+          />
+          <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <kbd class="px-2 py-1 text-xs border border-gray-300 dark:border-gray-700 rounded bg-gray-100 dark:bg-gray-800">⌘K</kbd>
+          </div>
+        </div>
+      )}
+
+      <!-- Mobile Search Button -->
+      {showSearch && (
+        <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" title="Search">
+          <i class="fas fa-search text-gray-600 dark:text-gray-300"></i>
+        </button>
+      )}
+
+      <!-- Theme Toggle -->
+      <button
+        id="theme-toggle"
+        onclick="toggleTheme()"
+        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+        title="Toggle Theme"
+      >
+        <i id="theme-icon" class="fas fa-moon text-gray-600 dark:text-gray-300"></i>
+      </button>
+
+      <!-- Notifications -->
+      <div class="relative group">
+        <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 relative">
+          <i class="fas fa-bell text-gray-600 dark:text-gray-300"></i>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <div class="absolute top-full right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+          <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="font-semibold text-gray-800 dark:text-white">Notifications</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">You have 5 unread messages</p>
+          </div>
+          <div class="max-h-96 overflow-y-auto">
+            {[
+              { user: "System", message: "Server maintenance scheduled", time: "5 min ago", icon: "fas fa-server text-blue-500", unread: true },
+              { user: "Payment", message: "Payment of $249.99 received", time: "1 hour ago", icon: "fas fa-credit-card text-green-500", unread: true },
+              { user: "Support", message: "Ticket #4123 has been resolved", time: "2 hours ago", icon: "fas fa-life-ring text-purple-500", unread: false },
+              { user: "Analytics", message: "Weekly report is ready", time: "5 hours ago", icon: "fas fa-chart-bar text-yellow-500", unread: false },
+              { user: "Security", message: "New login from Chrome on Windows", time: "1 day ago", icon: "fas fa-shield-alt text-red-500", unread: false }
+            ].map((notification) => (
+              <a href="#" class={`flex items-start space-x-3 p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${notification.unread ? 'bg-blue-50 dark:bg-gray-800' : ''}`}>
+                <div class={`${notification.icon} w-10 h-10 rounded-full bg-opacity-10 flex items-center justify-center flex-shrink-0`}></div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-800 dark:text-white">{notification.user}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-300 truncate">{notification.message}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{notification.time}</p>
+                </div>
+                {notification.unread && <div class="w-2 h-2 bg-blue-500 rounded-full"></div>}
+              </a>
+            ))}
+          </div>
+          <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+            <a href="#" class="block text-center text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700 dark:hover:text-blue-300">
+              View all notifications
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile -->
+      <div class="relative group">
+        <button class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+          <div class="relative">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+              JD
+            </div>
+            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full"></div>
+          </div>
+          <div class="hidden lg:block text-left">
+            <p class="font-medium text-gray-800 dark:text-white">Omesh Sachethana</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Admin</p>
+          </div>
+          <i class="fas fa-chevron-down text-gray-400 dark:text-gray-500 hidden lg:block"></i>
+        </button>
+        
+        <!-- Dropdown Menu -->
+        <div class="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+          <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                JD
+              </div>
+              <div>
+                <p class="font-semibold text-gray-800 dark:text-white">Omesh Sachethana</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">omesh@gmail.com</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-2">
+            <a href="/profile" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+              <i class="fas fa-user text-gray-500 dark:text-gray-400 w-5"></i>
+              <span class="text-gray-700 dark:text-gray-300">Profile</span>
+            </a>
+            <a href="/settings" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+              <i class="fas fa-cog text-gray-500 dark:text-gray-400 w-5"></i>
+              <span class="text-gray-700 dark:text-gray-300">Settings</span>
+            </a>
+            <a href="/billing" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+              <i class="fas fa-credit-card text-gray-500 dark:text-gray-400 w-5"></i>
+              <span class="text-gray-700 dark:text-gray-300">Billing</span>
+            </a>
+            
+            <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
+            
+            <a href="/help" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+              <i class="fas fa-question-circle text-gray-500 dark:text-gray-400 w-5"></i>
+              <span class="text-gray-700 dark:text-gray-300">Help & Support</span>
+            </a>
+            <a href="/feedback" class="flex items-center space-x-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+              <i class="fas fa-comment-alt text-gray-500 dark:text-gray-400 w-5"></i>
+              <span class="text-gray-700 dark:text-gray-300">Send Feedback</span>
+            </a>
+            
+            <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
+            
+            <button class="w-full flex items-center justify-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg font-medium">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Theme toggle function
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    const icon = document.getElementById('theme-icon');
+    
+    if (isDark) {
+      html.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      icon.classList.remove('fa-sun');
+      icon.classList.add('fa-moon');
+    } else {
+      html.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      icon.classList.remove('fa-moon');
+      icon.classList.add('fa-sun');
+    }
+  }
+  
+  // Initialize theme on load
+  document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const html = document.documentElement;
+    const icon = document.getElementById('theme-icon');
+    
+    if (savedTheme === 'dark') {
+      html.classList.add('dark');
+      icon.classList.remove('fa-moon');
+      icon.classList.add('fa-sun');
+    } else {
+      html.classList.remove('dark');
+      icon.classList.remove('fa-sun');
+      icon.classList.add('fa-moon');
+    }
+  });
+</script>
