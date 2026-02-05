@@ -18,9 +18,6 @@ import "../styles/global.css";
     <meta property="og:description" content="Advanced analytics and business intelligence dashboard" />
     <meta property="og:type" content="website" />
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json" />
-    
     <!-- Font Awesome -->
     <link
       rel="stylesheet"
@@ -56,6 +53,9 @@ import "../styles/global.css";
     <div id="app">
         <slot />
     </div>
+
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     <!-- Notifications Container -->
     <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2 w-96 max-w-full"></div>
@@ -157,7 +157,10 @@ import "../styles/global.css";
                 // Cmd/Ctrl + B for sidebar toggle
                 if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
                     e.preventDefault();
-                    if (typeof themeStore !== 'undefined') {
+                    // Toggle mobile sidebar
+                    if (window.innerWidth < 1024) {
+                        toggleMobileSidebar();
+                    } else if (typeof themeStore !== 'undefined') {
                         themeStore.toggleSidebar();
                     }
                 }
@@ -168,30 +171,24 @@ import "../styles/global.css";
                     document.getElementById('keyboard-help').classList.remove('hidden');
                 }
                 
-                // Escape to close modals/help
+                // Escape to close modals/help/sidebar
                 if (e.key === 'Escape') {
                     document.getElementById('keyboard-help').classList.add('hidden');
                     const modal = document.getElementById('modal-container');
                     if (modal && !modal.classList.contains('hidden')) {
                         modal.classList.add('hidden');
                     }
+                    
+                    // Close mobile sidebar
+                    if (window.innerWidth < 1024) {
+                        const sidebar = document.getElementById('sidebar');
+                        if (sidebar && sidebar.__x && sidebar.__x.$data.isOpen) {
+                            sidebar.__x.$data.isOpen = false;
+                            document.body.style.overflow = '';
+                        }
+                    }
                 }
             });
-        });
-        
-        // Error handling
-        window.addEventListener('error', function(e) {
-            console.error('Global error:', e.error);
-            
-            // Show user-friendly error message for network errors
-            if (e.message.includes('fetch') || e.message.includes('network')) {
-                showNotification('Network error occurred. Please check your connection.', 'error');
-            }
-        });
-        
-        // Unhandled promise rejection
-        window.addEventListener('unhandledrejection', function(e) {
-            console.error('Unhandled promise rejection:', e.reason);
         });
         
         // Notification system
@@ -250,6 +247,19 @@ import "../styles/global.css";
         
         // Expose to global scope
         window.showNotification = showNotification;
+        window.toggleMobileSidebar = window.toggleMobileSidebar || function() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && sidebar.__x) {
+                sidebar.__x.$data.isOpen = !sidebar.__x.$data.isOpen;
+                
+                // Toggle body overflow
+                if (sidebar.__x.$data.isOpen) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }
+        };
     </script>
 </body>
 </html>
@@ -300,6 +310,22 @@ import "../styles/global.css";
     :focus-visible {
         outline: 2px solid rgba(59, 130, 246, 0.5);
         outline-offset: 2px;
+    }
+    
+    /* Mobile sidebar overlay */
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 30;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
     }
     
     /* Print styles */
